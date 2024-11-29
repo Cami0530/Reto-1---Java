@@ -1,3 +1,4 @@
+import java.util.Random;
 import java.util.Scanner;
 
 public class App {
@@ -9,8 +10,10 @@ public class App {
 
     static String[] naves = {"Atlantis", "Enterprise", "Serenity", "Halcón Milenario"};
     static double[] velocidades = {20000, 10000, 40000, 60000};// En Km/h
+    static double[] consumoCombustible = {200, 100, 400, 600}; // Litros por millon de km
+    static double[] consumoOxigeno = {100, 50, 200, 300}; // Litros por millon de km
 
-    static String naveSeleccionada;
+    static int naveSeleccionada; // Apunta a la posicion de la nave seleccionada, mas no al nombre.
     static int planetaSeleccionado;// Indica la posicion del planeta seleccionado
 
     public static void main(String[] args) throws Exception {
@@ -35,6 +38,7 @@ public class App {
 
         }while(opcion != 5);
     }
+
     public static void mostrarMenu(){
 
         System.out.println("------------------------------");
@@ -63,7 +67,7 @@ public class App {
         int seleccion = scanner.nextInt();
         if(seleccion >0 && seleccion <= naves.length){
             System.out.println("Nave seleccionada: " + naves[seleccion - 1]);
-            naveSeleccionada = naves[seleccion - 1];
+            naveSeleccionada = seleccion - 1;
         }
         else{
             System.out.println("¡Opcion no valida! Intenta de nuevo.");
@@ -71,10 +75,28 @@ public class App {
     }
 
     public static void calcularRecursos(){
-        double combustible = 0;
+        double combustible = consumoCombustible[naveSeleccionada];
+        double oxigeno = distancias[planetaSeleccionado]*100; // Por cada millon de km, se necesitan 100 litros de oxigeno.
+        System.out.println("El combustible requerido es de: " + combustible + " millones de litros");
+        System.out.println("El oxigeno requerido es de: " + oxigeno + " millones de litros");
     }
 
     public static void iniciarSimulacion(){
-
+        System.out.println("...Iniciando simulacion...");
+        Random random = new Random();
+        for (int progreso = 0; progreso <= 100; progreso+=10){
+            System.out.println(progreso + "% del viaje completado");
+            if (progreso == 50){
+                System.out.println("50% del viaje completado");
+            }
+            if(random.nextInt(10) <3){
+                System.out.println("¡Evento inesperado! Realizando ajustes...");
+            }
+            try {
+                Thread.sleep(500);
+            }catch(InterruptedException e){
+                System.out.println("Error en la simulacion");
+            }
+        }
     }
 }
