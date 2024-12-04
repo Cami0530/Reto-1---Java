@@ -6,41 +6,44 @@ public class App {
     static Scanner scanner = new Scanner(System.in);
 
     static String[] planetas = {"Mercurio", "Venus", "Marte", "Neptuno"};
-    static double[] distancias = {0.39, 0.72, 1.52, 4.50}; // En millones de Km
+    static double[] distancias = {0.39, 0.72, 1.52, 4.50}; // En millones de Km   
 
     static String[] naves = {"Atlantis", "Enterprise", "Serenity", "Halcón Milenario"};
-    static double[] velocidades = {20000, 10000, 40000, 60000};// En Km/h
-    static double[] consumoCombustible = {200, 100, 400, 600}; // Litros por millon de km
-    static double[] consumoOxigeno = {100, 50, 200, 300}; // Litros por millon de km
+    static double[] velocidades = {20000, 10000, 40000, 60000}; // En Km/h
+    static int[] consumoCombustible = {200, 100, 400, 600}; // Litros por millón de km
+    static int[] consumoOxigeno = {100, 50, 200, 300}; // Litros por millón de km
 
-    static int naveSeleccionada; // Apunta a la posicion de la nave seleccionada, mas no al nombre.
-    static int planetaSeleccionado;// Indica la posicion del planeta seleccionado
+    static int naveSeleccionada = -1; // Inicializado en -1 para indicar que no se ha seleccionado ninguna nave
+    static int planetaSeleccionado = -1; // Inicializado en -1 para indicar que no se ha seleccionado ningún planeta
 
     public static void main(String[] args) throws Exception {
         int opcion;
-        do{
+        do {
             mostrarMenu();
             opcion = scanner.nextInt();
-            switch(opcion){
+            switch (opcion) {
                 case 1:
-                        selecionarPlaneta();
+                    selecionarPlaneta();
                     break;
                 case 2:
-                        selecionarNave();
+                    selecionarNave();
                     break;
                 case 3:
-                        calcularRecursos();
+                    calcularRecursos();
                     break;
                 case 4:
-                        iniciarSimulacion();
+                    iniciarSimulacion();
                     break;
+                case 5:
+                    System.out.println("Saliendo del programa...");
+                    break;
+                default:
+                    System.out.println("¡Opción no válida! Por favor, selecciona una opción dentro del menú.");
             }
-
-        }while(opcion != 5);
+        } while (opcion != 5);
     }
 
-    public static void mostrarMenu(){
-
+    public static void mostrarMenu() {
         System.out.println("------------------------------");
         System.out.println("        Menu Principal");
         System.out.println("------------------------------");
@@ -50,53 +53,155 @@ public class App {
         System.out.println("4. Iniciar simulacion de viaje");
         System.out.println("5. Salir del programa");
         System.out.println("Por favor elige una opcion: ");
-
-        
     }
 
-    public static void selecionarPlaneta(){
-
+    public static void selecionarPlaneta() {
+        System.out.println("----Seleccion de un planeta----");
+        for (int i = 0; i < planetas.length; i++) {
+            System.out.println((i + 1) + ". " + planetas[i] + " - Distancia: " + distancias[i] + " millones de Km");
+        }
+        System.out.println("Por favor elige un planeta: ");
+        int seleccion = scanner.nextInt();
+        if (seleccion > 0 && seleccion <= planetas.length) {
+            System.out.println("Planeta seleccionado: " + planetas[seleccion - 1]);
+            planetaSeleccionado = seleccion - 1;
+        } else {
+            System.out.println("¡Opción no válida! Intenta de nuevo.");
+        }
     }
 
-    public static void selecionarNave(){
+    public static void selecionarNave() {
         System.out.println("---Seleccion de una nave espacial---");
-        for(int i = 0; i < naves.length; i++){
+        for (int i = 0; i < naves.length; i++) {
             System.out.println("Nave: " + (i + 1) + ". " + naves[i] + " - Velocidad: " + velocidades[i] + " Km/h");
         }
         System.out.println("Por favor elige una nave: ");
         int seleccion = scanner.nextInt();
-        if(seleccion >0 && seleccion <= naves.length){
+        if (seleccion > 0 && seleccion <= naves.length) {
             System.out.println("Nave seleccionada: " + naves[seleccion - 1]);
             naveSeleccionada = seleccion - 1;
-        }
-        else{
-            System.out.println("¡Opcion no valida! Intenta de nuevo.");
+        } else {
+            System.out.println("¡Opción no válida! Intenta de nuevo.");
         }
     }
 
-    public static void calcularRecursos(){
-        double combustible = consumoCombustible[naveSeleccionada];
-        double oxigeno = distancias[planetaSeleccionado]*100; // Por cada millon de km, se necesitan 100 litros de oxigeno.
-        System.out.println("El combustible requerido es de: " + combustible + " millones de litros");
-        System.out.println("El oxigeno requerido es de: " + oxigeno + " millones de litros");
+    public static void calcularRecursos() {
+        // Validar que se haya seleccionado un planeta y una nave
+        if (planetaSeleccionado == -1 || naveSeleccionada == -1) {
+            System.out.println("Debes seleccionar un planeta y una nave antes de calcular los recursos.");
+            return; // Salir del método si no hay selección
+        }
+    
+        // Calcular recursos
+        double distancia = distancias[planetaSeleccionado];
+        double combustible = distancia * consumoCombustible[naveSeleccionada];
+        double oxigeno = distancia * consumoOxigeno[naveSeleccionada];
+
+        // Calcular el tiempo de viaje
+        double velocidad = velocidades[naveSeleccionada];
+        double tiempoHoras = (distancia * 1000000) / velocidad;
+        int dias = (int) (tiempoHoras / 24);
+        int horas = (int) (tiempoHoras % 24);
+
+        // Mostrar resultados
+        System.out.println("Recursos necesarios para el viaje a " + planetas[planetaSeleccionado]);
+        System.out.printf("- Combustible requerido: %.2f millones de litros%n", combustible);
+        System.out.printf("- Oxígeno requerido: %.2f millones de litros%n", oxigeno);
+        System.out.println("Tiempo estimado de viaje a " + planetas[planetaSeleccionado] + ": " + dias + " días y " + horas + " horas.");
     }
 
-    public static void iniciarSimulacion(){
-        System.out.println("...Iniciando simulacion...");
+    public static void iniciarSimulacion() {
+        // Validar que se haya seleccionado un planeta y una nave
+        if (planetaSeleccionado == -1 || naveSeleccionada == -1) {
+            System.out.println("Debes seleccionar un planeta y una nave antes de iniciar la simulación.");
+            return; // Salir del método si no hay selección
+        }
+
         Random random = new Random();
-        for (int progreso = 0; progreso <= 100; progreso+=10){
-            System.out.println(progreso + "% del viaje completado");
-            if (progreso == 50){
-                System.out.println("50% del viaje completado");
+        double distancia = distancias[planetaSeleccionado];
+        double combustible = distancia * consumoCombustible[naveSeleccionada];
+        double oxigeno = distancia * consumoOxigeno[naveSeleccionada];
+
+        double velocidad = velocidades[naveSeleccionada];
+        double tiempoHoras = (distancia * 1000000) / velocidad;
+        int tiempoRestanteDias = (int) (tiempoHoras / 24);
+        int tiempoRestanteHoras = (int) (tiempoHoras % 24);
+
+        System.out.println("...Iniciando simulacion...");
+        System.out.println(" ");
+        for (int progreso = 0; progreso <= 100; progreso += 10) {
+            double porcentajeAvance = progreso / 100.0;
+            double combustibleRestante = combustible * (1 - porcentajeAvance);
+            double oxigenoRestante = oxigeno * (1 - porcentajeAvance);
+            int tiempoRestanteDiasActualizado = (int) (tiempoRestanteDias * (1 - porcentajeAvance));
+            int tiempoRestanteHorasActualizado = (int) (tiempoRestanteHoras * (1 - porcentajeAvance));
+
+            // Mostrar progreso
+            System.out.println(progreso + "% del viaje completado.");
+            System.out.printf("Recursos restantes: %.2f millones de litros de combustible, %.2f millones de litros de oxígeno%n", combustibleRestante, oxigenoRestante);
+            System.out.printf("Tiempo restante: %d días y %d horas%n", tiempoRestanteDiasActualizado, tiempoRestanteHorasActualizado);
+
+            // Generar evento aleatorio con una probabilidad del 30%
+            if (random.nextInt(100) < 30){
+                generarEvento(random);
             }
-            if(random.nextInt(10) <3){
-                System.out.println("¡Evento inesperado! Realizando ajustes...");
-            }
+
             try {
                 Thread.sleep(500);
-            }catch(InterruptedException e){
-                System.out.println("Error en la simulacion");
+            } catch (InterruptedException e) {
+                System.out.println("Error en la simulación");
             }
+        }
+        System.out.println("¡Simulación completada! Has llegado a " + planetas[planetaSeleccionado] + ".");
+    }
+
+    public static void generarEvento(Random random) {
+        int evento = random.nextInt(3);  // Generar un evento aleatorio (falla, asteroide, desvío)
+
+        switch (evento) {
+            case 0:
+                System.out.println("¡Falla en el sistema de propulsión! Se requiere reiniciar el sistema.");
+                resolverFalla();
+                break;
+            case 1:
+                System.out.println("¡Asteroide dirigiendo hacia la nave! Necesitas cambiar la dirección.");
+                evitarAsteroide();
+                break;
+            case 2:
+                System.out.println("¡Desvío inesperado! Debes corregir el curso.");
+                corregirDesvio();
+                break;
+        }
+    }
+
+    public static void resolverFalla() {
+        System.out.println("El sistema de propulsión está fallando. ¿Quieres intentar reiniciarlo? (S/N)");
+        char respuesta = scanner.next().charAt(0);
+        if (respuesta == 'S' || respuesta == 's') {
+            System.out.println("Reiniciando el sistema... ¡Reinicio exitoso!");
+        } else {
+            System.out.println("No se realizó el reinicio. El sistema de propulsión podría averiarse.");
+        }
+    }
+
+    public static void evitarAsteroide() {
+        System.out.println("Un asteroide se esta dirigiendo hacia la nave. ¿Deseas maniobrar para esquivarlo? (S/N)");
+        char respuesta = scanner.next().charAt(0);
+        if (respuesta == 'S' || respuesta == 's') {
+            System.out.println("Evitando el asteroide... ¡Maniobra exitosa!");
+        } else {
+            System.out.println("Impacto con el asteroide.¡La nave ha sido destruida! La tripulación ha muerto.");
+            System.exit(0);
+        }
+    }
+
+    public static void corregirDesvio() {
+        System.out.println("La nave ha sufrido un desvío. ¿Quieres corregir el curso? (S/N)");
+        char respuesta = scanner.next().charAt(0);
+        if (respuesta == 'S' || respuesta == 's') {
+            System.out.println("Corrigiendo el curso... ¡Curso restaurado!");
+        } else {
+            System.out.println("No se corrigió el curso. El viaje podría ser más largo.");
         }
     }
 }
