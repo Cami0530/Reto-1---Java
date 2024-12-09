@@ -218,7 +218,7 @@ public class App {
             System.out.println(" ");
         } else {
             System.out.println(" ");
-            System.out.println("Impacto con el asteroide.¡La nave ha sido destruida! La tripulación ha muerto.");
+            System.out.println("El asteroide ha impactado la nave.¡La nave ha sido destruida! La tripulación ha muerto.");
             System.out.println(" ");
             System.exit(0);
         }
@@ -226,7 +226,7 @@ public class App {
 
     public static void corregirDesvio() {
         System.out.println(" ");
-        System.out.println("La nave ha sufrido un desvío. ¿Quieres corregir el curso? (S/N)");
+        System.out.println("La nave ha sufrido un desvío inesperado. ¿Quieres corregir el curso? (S/N)");
         char respuesta = scanner.next().charAt(0);
         if (respuesta == 'S' || respuesta == 's') {
             System.out.println(" ");
